@@ -20,6 +20,9 @@ wget -qO- https://raw.github.com/mitchellh/vagrant/master/keys/vagrant.pub >> ~/
 echo "vagrant	ALL = NOPASSWD: ALL" | tee /etc/sudoers.d/vagrant
 chmod 0440 /etc/sudoers.d/vagrant
 
+# Install Chef
+curl -L https://www.opscode.com/chef/install.sh | sudo bash
+
 # VMWare Tools
 cd /tmp
 mkdir -p /mnt/cdrom
