@@ -23,15 +23,63 @@
     "ssh_port": 22,
     "ssh_wait_timeout": "10000s",
     "shutdown_command": "echo 'vagrant' | sudo -E -S shutdown -P now"
+  },
+  {
+    "type": "virtualbox-iso",
+    "tools_upload_flavor": "linux",
+    "headless": true,
+    "boot_command": [
+      "<esc><esc><enter><wait>",
+      "/install/vmlinuz noapic preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/preseed.cfg <wait>",
+      "debian-installer=en_GB auto locale=en_GB.UTF-8 kbd-chooser/method=uk <wait>",
+      "hostname=vagrant <wait>",
+      "fb=false debconf/frontend=noninteractive <wait>",
+      "keyboard-configuration/modelcode=SKIP keyboard-configuration/layout=UK keyboard-configuration/variant=UK console-setup/ask_detect=false <wait>",
+      "initrd=/install/initrd.gz -- <enter><wait>"
+    ],
+    "boot_wait": "4s",
+    "disk_size": 10140,
+    "http_directory": "http",
+    "iso_url": "http://releases.ubuntu.com/14.04/ubuntu-14.04-server-amd64.iso",
+    "iso_checksum_type": "md5",
+    "iso_checksum": "01545fa976c8367b4f0d59169ac4866c",
+    "ssh_username": "vagrant",
+    "ssh_password": "vagrant",
+    "ssh_port": 22,
+    "ssh_wait_timeout": "10000s",
+    "shutdown_command": "echo 'vagrant' | sudo -E -S shutdown -P now"
   }],
   "provisioners": [{
     "type": "shell",
-    "script": "build.sh",
-    "execute_command": "echo 'vagrant' | {{ .Vars }} sudo -E -S bash '{{ .Path }}'"
+    "script": "scripts/base.sh",
+    "execute_command": "echo 'vagrant' | {{ .Vars }} sudo -E -S bash '{{ .Path }}'",
+    "override": {
+      "virtualbox-iso": {
+        "scripts": [
+          "scripts/base.sh",
+          "scripts/virtualbox.sh",
+          "scripts/cleanup.sh"
+        ]
+      },
+      "vmware-iso": {
+        "scripts": [
+          "scripts/base.sh",
+          "scripts/vmware.sh",
+          "scripts/cleanup.sh",
+        ]
+      }
+    }
   }],
   "post-processors": [{
     "type": "vagrant",
     "compression_level": 9,
-    "output": "ubuntu-trusty.box"
+    "override": {
+      "virtualbox": {
+        "output": "ubuntu-14-04-x64-virtualbox.box"
+      },
+      "vmware": {
+        "output": "ubuntu-14-04-x64-vmware.box"
+      }
+    }
   }]
 }
