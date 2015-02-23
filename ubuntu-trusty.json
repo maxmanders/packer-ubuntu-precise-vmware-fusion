@@ -26,7 +26,6 @@
   },
   {
     "type": "virtualbox-iso",
-    "tools_upload_flavor": "linux",
     "headless": true,
     "boot_command": [
       "<esc><esc><enter><wait>",
@@ -51,7 +50,6 @@
   }],
   "provisioners": [{
     "type": "shell",
-    "script": "scripts/base.sh",
     "execute_command": "echo 'vagrant' | {{ .Vars }} sudo -E -S bash '{{ .Path }}'",
     "override": {
       "virtualbox-iso": {
@@ -65,7 +63,7 @@
         "scripts": [
           "scripts/base.sh",
           "scripts/vmware.sh",
-          "scripts/cleanup.sh",
+          "scripts/cleanup.sh"
         ]
       }
     }
